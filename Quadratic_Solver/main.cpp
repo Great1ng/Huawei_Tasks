@@ -23,7 +23,7 @@ int main() {
 void run_unit_tests() {
     const int n_tests = 6;
 
-    double inputs[n_tests][5] = {
+    double inputs[n_tests][3] = {
             {1, 5, 6},
             {0, 1, 6},
             {0, 5, 0},
@@ -31,7 +31,7 @@ void run_unit_tests() {
             {0, 0, 0},
             {NAN, NAN, 1}
     };
-    double outputs[n_tests][4] = {
+    double expects[n_tests][3] = {
             {2, -3, -2},
             {1, -6,  0},
             {1,  0,  0},
@@ -39,17 +39,18 @@ void run_unit_tests() {
             {EQ_ROOTS_INF},
             {EQ_ERROR_NOT_FINITE}
     };
+    double outputs[n_tests][3] = {};
 
     for (unsigned test = 0; test < n_tests; ++test) {
-        UNIT_TEST_RESULT result = run_unit_test(inputs[test], outputs[test]);
+        UNIT_TEST_RESULT result = run_unit_test(inputs[test], expects[test], outputs[test]);
 
         if (result == UNIT_TEST_RESULT::INPUT_ERROR)
             fprintf(stderr, "Test input error!\n");
 
         if (result == UNIT_TEST_RESULT::FAILED) {
             fprintf(stderr, "Test %u failed: ", test);
-            fprintf(stderr, "Output %lg, %lg, %lg ", outputs[test][3], inputs[test][3], inputs[test][4]);
-            fprintf(stderr, "Expected %lg, %lg, %lg\n", outputs[test][0], outputs[test][1], outputs[test][2]);
+            fprintf(stderr, "Output %lg, %lg, %lg ", outputs[test][0], outputs[test][1], outputs[test][2]);
+            fprintf(stderr, "Expected %lg, %lg, %lg\n", expects[test][0], expects[test][1], expects[test][2]);
         }
     }
 }
