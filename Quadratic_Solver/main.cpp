@@ -2,7 +2,7 @@
 #include "equations.h"
 #include "unit_tests.h"
 
-#define TESTING
+//#define TESTING
 
 const int CORRECT_INPUT = 3;
 
@@ -41,7 +41,7 @@ void run_unit_tests() {
     };
 
     for (unsigned test = 0; test < n_tests; ++test) {
-        UNIT_TEST_RESULT result = run_unit_test(solve_quadratic, inputs[test], outputs[test]);
+        UNIT_TEST_RESULT result = run_unit_test(inputs[test], outputs[test]);
 
         if (result == UNIT_TEST_RESULT::INPUT_ERROR)
             fprintf(stderr, "Test input error!\n");
@@ -61,7 +61,6 @@ void run_work_cycle() {
     double a = NAN, b = NAN, c = NAN;
 
     int input = 0;
-
     while (input != CORRECT_INPUT) {
         printf("Enter a, b, c: ");
         input = scanf("%lg %lg %lg", &a, &b, &c);
