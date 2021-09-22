@@ -4,9 +4,12 @@
 
 //#define TESTING
 
-const int CORRECT_INPUT = 3;
-
 void run_unit_tests();
+
+void print_roots(int number_of_roots, double root_1, double root_2);
+
+void print_error(int error_code);
+
 void run_work_cycle();
 
 int main() {
@@ -17,66 +20,40 @@ int main() {
     run_work_cycle();
 #endif
 
-    return EXIT_SUCCESS;
+    return 0;
 }
 
 void run_unit_tests() {
     const int n_tests = 6;
 
-    double inputs[n_tests][3] = {
-            {1, 5, 6},
-            {0, 1, 6},
-            {0, 5, 0},
-            {0, 0, 3},
-            {0, 0, 0},
-            {NAN, NAN, 1}
+    const unit_test inputs[n_tests] = {
+            {1, 5, 6, 2, -3, -2},
+            {0, 1, 6, 1, -6},
+            {0, 5, 0, 1, 0},
+            {0, 0, 3, 0},
+            {0, 0, 0, EQ_ROOTS_INF},
+            {NAN, NAN, 1, EQ_ERROR_NOT_FINITE}
     };
-    double expects[n_tests][3] = {
-            {2, -3, -2},
-            {1, -6,  0},
-            {1,  0,  0},
-            {0,  0,  0},
-            {EQ_ROOTS_INF},
-            {EQ_ERROR_NOT_FINITE}
-    };
-    double outputs[n_tests][3] = {};
+
+    int n_roots = 0;
+    double root_1 = NAN, root_2 = NAN;
 
     for (unsigned test = 0; test < n_tests; ++test) {
-        UNIT_TEST_RESULT result = run_unit_test(inputs[test], expects[test], outputs[test]);
+        UNIT_TEST_RESULT result = run_unit_test(&inputs[test], &n_roots, &root_1, &root_2);
 
         if (result == UNIT_TEST_RESULT::INPUT_ERROR)
-            fprintf(stderr, "Test input error!\n");
+            printf("Test input error!\n");
 
         if (result == UNIT_TEST_RESULT::FAILED) {
-            fprintf(stderr, "Test %u failed: ", test);
-            fprintf(stderr, "Output %lg, %lg, %lg ", outputs[test][0], outputs[test][1], outputs[test][2]);
-            fprintf(stderr, "Expected %lg, %lg, %lg\n", expects[test][0], expects[test][1], expects[test][2]);
+            printf("Test %u failed: ", test+1);
+            printf("Output %d, %lg, %lg ", n_roots, root_1, root_2);
+            printf("Expected %d, %lg, %lg\n", inputs[test].n_roots, inputs[test].root_1, inputs[test].root_2);
         }
     }
 }
 
-void run_work_cycle() {
-    printf("# Quadratic equation solver\n"
-           "# (c) Innokentiy Popov, 2021\n\n");
-
-    double a = NAN, b = NAN, c = NAN;
-
-    int input = 0;
-    while (input != CORRECT_INPUT) {
-        printf("Enter a, b, c: ");
-        input = scanf("%lg %lg %lg", &a, &b, &c);
-        __fpurge(stdin);
-
-        if (input != CORRECT_INPUT)
-            printf("Invalid input! Enter only number!\n");
-    }
-
-    double root_1 = 0, root_2 = 0;
-
-    int number_of_roots = solve_quadratic(a, b, c, &root_1, &root_2);
-
-    switch(number_of_roots)
-    {
+void print_roots(int number_of_roots, double root_1, double root_2) {
+    switch(number_of_roots) {
         case EQ_ROOTS_ZERO:
             printf("no roots\n");
             break;
@@ -89,17 +66,50 @@ void run_work_cycle() {
         case EQ_ROOTS_INF:
             printf("infinitely many roots\n");
             break;
+        default:
+            printf("\nERROR: amount_of_roots = %d\n", number_of_roots);
+    }
+}
+
+void print_error(int error_code) {
+    switch(error_code) {
         case EQ_ERROR_NOT_FINITE:
-            fprintf(stderr, "\nERROR: Input value is infinity or NaN!\n");
+            printf("\nERROR: Input value is infinity or NaN!\n");
             break;
         case EQ_ERROR_EQUAL_PTR:
-            fprintf(stderr, "\nERROR: The pointers are equal!\n");
+            printf("\nERROR: The pointers are equal!\n");
             break;
         case EQ_ERROR_NULL_PTR:
-            fprintf(stderr, "\nERROR: The pointer is null!\n");
+            printf("\nERROR: The pointer is null!\n");
             break;
         default:
-            fprintf(stderr, "\nERROR: amount_of_roots = %d\n", number_of_roots);
-            break;
+            printf("\nERROR: error_code = %d\n", error_code);
     }
+}
+
+void run_work_cycle() {
+    printf("# Quadratic equation solver\n"
+           "# (c) Innokentiy Popov, 2021\n\n");
+
+    const int CORRECT_INPUT = 3;
+    double a = NAN, b = NAN, c = NAN;
+
+    int input = 0;
+    while (input != CORRECT_INPUT) {
+        printf("Enter a, b, c: ");
+        input = scanf("%lg %lg %lg", &a, &b, &c);
+        __fpurge(stdin);
+
+        if (input != CORRECT_INPUT)
+            printf("Invalid input! Enter only number!\n");
+    }
+
+    double root_1 = NAN, root_2 = NAN;
+
+    int number_of_roots = solve_quadratic(a, b, c, &root_1, &root_2);
+
+    if (number_of_roots < 0)
+        print_error(number_of_roots);
+    else
+        print_roots(number_of_roots, root_1, root_2);
 }

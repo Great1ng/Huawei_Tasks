@@ -31,7 +31,7 @@ enum EQ_ERROR {
 //!
 //! \note In case of infinitely many number of roots return SQ_INF_ROOTS
 //!-------------------------------------------------------------------------------
-int solve_quadratic(double a, double b, double c, double* root_1, double* root_2);
+int solve_quadratic(const double a, const double b, const double c, double* root_1, double* root_2);
 
 //!-------------------------------------------------------------------------------
 //! \brief Solves linear equation ax + b = 0
@@ -43,6 +43,6 @@ int solve_quadratic(double a, double b, double c, double* root_1, double* root_2
 //!
 //! \note In case of infinitely many number of roots return SQ_INF_ROOTS
 //!-------------------------------------------------------------------------------
-int solve_linear(double a, double b, double* root);
+int solve_linear(const double a, const double b, double* root);
 
 #endif //QUADRATIC_SOLVER_EQUATIONS_H
