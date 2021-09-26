@@ -1,62 +1,52 @@
 #include "sorting.h"
 
-void mergesort(void* base, size_t count, size_t type, int (*comp)(const void*, const void*)) {
-    if (count == 1) return;
+namespace ong {
 
-    byte* bt_base = (byte*)base;
+    void mergesort(void *base, size_t count, size_t type, comparator comp) {
+        if (count == 1) return;
 
-    size_t lcount = count / 2;
-    size_t rcount = count - lcount;
+        char *bt_base = (char *) base;
 
-    mergesort(bt_base, lcount, type, comp);
-    mergesort(bt_base + lcount*type, rcount, type, comp);
+        size_t lcount = count / 2;
+        size_t rcount = count - lcount;
 
-    merge_arr(base, lcount, bt_base + lcount*type, rcount, type, comp);
-}
+        mergesort(bt_base, lcount, type, comp);
+        mergesort(bt_base + lcount * type, rcount, type, comp);
 
-void merge_arr(void* lbase, size_t lcnt, void* rbase, size_t rcnt, size_t type, int (*comp)(const void*, const void*)) {
-    byte* tmp = (byte*)calloc(lcnt+rcnt, type);
+        merge_arrays(base, lcount, bt_base + lcount * type, rcount, type, comp);
+    }
 
-    byte* bt_lbase = (byte*)lbase;
-    byte* bt_rbase = (byte*)rbase;
+    void merge_arrays(void *lbase, size_t lcnt, void *rbase, size_t rcnt, size_t type, comparator comp) {
+        char *tmp = (char *) calloc(lcnt + rcnt, type);
 
-    byte* lptr = bt_lbase;
-    byte* rptr = bt_rbase;
-    size_t sorted_cnt = 0;
+        char *bt_lbase = (char *) lbase;
+        char *bt_rbase = (char *) rbase;
 
-    while (lptr < bt_lbase+lcnt*type) {
-        while (rptr < bt_rbase+rcnt*type && comp(rptr, lptr) < 0) {
-            copy_bytes(rptr, tmp+sorted_cnt*type, type);
+        char *lptr = bt_lbase;
+        char *rptr = bt_rbase;
+        size_t sorted_cnt = 0;
+
+        while (lptr < bt_lbase + lcnt * type) {
+            while (rptr < bt_rbase + rcnt * type && comp(rptr, lptr) < 0) {
+                memcpy(tmp + sorted_cnt * type, rptr, type);
+                rptr += type;
+                sorted_cnt++;
+            }
+
+            memcpy(tmp + sorted_cnt * type, lptr, type);
+            lptr += type;
+            sorted_cnt++;
+        }
+
+        while (rptr < bt_rbase + rcnt * type) {
+            memcpy(tmp + sorted_cnt * type, rptr, type);
             rptr += type;
             sorted_cnt++;
         }
 
-        copy_bytes(lptr, tmp+sorted_cnt*type, type);
-        lptr += type;
-        sorted_cnt++;
+        memcpy(bt_lbase, tmp, (lcnt + rcnt) * type);
+
+        free(tmp);
     }
 
-    while (rptr < bt_rbase+rcnt*type) {
-        copy_bytes(rptr, tmp+sorted_cnt*type, type);
-        rptr += type;
-        sorted_cnt++;
-    }
-
-    copy_bytes(tmp, bt_lbase, (lcnt+rcnt)*type);
-
-    free(tmp);
 }
-
-
-
-void bubblesort(void* base, size_t count, size_t type, int (*comp)(const void*, const void*)) {
-    byte* bt_base = (byte*)base;
-
-    for (size_t i = 0; i < count; i++) {
-        for (size_t j = 1; j < count; j++) {
-            if (comp(bt_base+j*type, bt_base+(j-1)*type) < 0)
-                swap(bt_base+j*type, bt_base+(j-1)*type, type);
-        }
-    }
-}
-
