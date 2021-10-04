@@ -12,13 +12,25 @@ int solve_quadratic(const double a, const double b, const double c, double* root
     if (compare(a, 0))
         return solve_linear(b, c, root_1);
 
+    if (compare(c, 0)) {
+        *root_1 = 0;
+        solve_linear(a, b, root_2);
+        if (compare(*root_1, *root_2))
+            return EQ_ROOTS_ONE;
+        else
+            return EQ_ROOTS_TWO;
+    }
+
     const double dscr = b*b - 4*a*c;
 
     if (dscr < 0)
         return EQ_ROOTS_ZERO;
 
     if (compare(dscr, 0)) {
-        *root_1 = -b / (2*a);
+        if (compare(b, 0))
+            *root_1 = 0;
+        else
+            *root_1 =-b / (2*a);
         return EQ_ROOTS_ONE;
     }
 
@@ -41,6 +53,9 @@ int solve_linear(const double a, const double b, double* root) {
         return EQ_ROOTS_ZERO;
     }
 
-    *root = -b / a;
+    if (compare(b, 0))
+        *root = 0;
+    else
+        *root = -b / a;
     return EQ_ROOTS_ONE;
 }

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
-project(Onegin)
+project(Protected_Stack)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS}\
         -Werror\
@@ -69,4 +69,4 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS}\
         -pie\
 ")
 
-add_executable(Onegin main.cpp sorting.cpp sorting.h wide_string.cpp wide_string.h wide_text.cpp wide_text.h unit_test.cpp unit_test.h)
+add_executable(Protected_Stack main.cpp memory.cpp memory.h)
