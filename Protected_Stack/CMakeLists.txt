@@ -69,4 +69,4 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS}\
         -pie\
 ")
 
-add_executable(Protected_Stack main.cpp memory.cpp memory.h)
+add_executable(Protected_Stack main.cpp stack.cpp stack.h hash.cpp hash.h utils.cpp utils.h stk-config.h)
